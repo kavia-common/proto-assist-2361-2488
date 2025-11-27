@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import WireframeRenderer from '../components/WireframeRenderer';
 import Toolbar from '../components/Toolbar';
 import PromptModal from '../components/PromptModal';
+import ExportModal from '../components/ExportModal';
 import wireframeApi from '../services/wireframeApi';
 import './Wireframe.css';
 
@@ -23,6 +24,7 @@ const Wireframe = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPromptModal, setShowPromptModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   /**
    * Load wireframe by ID when route param changes
@@ -89,6 +91,7 @@ const Wireframe = () => {
 
   /**
    * Handle export action from toolbar
+   * Opens the export modal
    */
   const handleExport = () => {
     if (!currentWireframe) {
@@ -96,16 +99,7 @@ const Wireframe = () => {
       return;
     }
     
-    // For now, export as JSON
-    const dataStr = JSON.stringify(currentWireframe, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-    
-    const exportFileDefaultName = `wireframe-${currentWireframe.id}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
+    setShowExportModal(true);
   };
 
   /**
@@ -181,6 +175,13 @@ const Wireframe = () => {
         <PromptModal
           onSubmit={handlePromptSubmit}
           onClose={() => setShowPromptModal(false)}
+        />
+      )}
+
+      {showExportModal && currentWireframe && (
+        <ExportModal
+          wireframeId={currentWireframe.id}
+          onClose={() => setShowExportModal(false)}
         />
       )}
     </div>
