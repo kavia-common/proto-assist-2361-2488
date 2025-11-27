@@ -4,19 +4,37 @@ import env from '../config/env';
  * HTTP Client Module
  * 
  * Provides a configured fetch-based HTTP client with automatic bearer token
- * injection, request/response interceptors, and error normalization.
+ * injection, request/response interceptors, error normalization, and 401 handling.
  * 
  * PUBLIC_INTERFACE
  */
 
 /**
- * Get authentication token from SessionContext via localStorage
+ * Get authentication token from localStorage
  * This approach allows the HTTP client to work independently of React context
  * 
  * @returns {string|null} Authentication token
  */
 const getAuthToken = () => {
   return localStorage.getItem('auth_token');
+};
+
+/**
+ * Handle 401 Unauthorized response
+ * Clears token and redirects to login page
+ * 
+ * @param {Response} response - Fetch response object
+ */
+const handle401Response = (response) => {
+  if (response.status === 401) {
+    // Clear token from localStorage
+    localStorage.removeItem('auth_token');
+    
+    // Redirect to login page if not already there
+    if (window.location.pathname !== '/login') {
+      window.location.href = '/login';
+    }
+  }
 };
 
 /**
@@ -108,6 +126,11 @@ const request = async (endpoint, options = {}) => {
 
   try {
     const response = await fetch(url, fetchOptions);
+
+    // Handle 401 immediately
+    if (response.status === 401) {
+      handle401Response(response);
+    }
 
     // Parse response body
     let responseBody = null;

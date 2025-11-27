@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useSession } from '../context/SessionContext';
 import { useApp } from '../context/AppContext';
+import SessionBadge from './SessionBadge';
 import './Navbar.css';
 
 /**
@@ -13,7 +13,6 @@ import './Navbar.css';
  */
 const Navbar = () => {
   const location = useLocation();
-  const { isAuthenticated, user, logout } = useSession();
   const { theme, toggleTheme } = useApp();
 
   /**
@@ -69,20 +68,7 @@ const Navbar = () => {
             {theme === 'light' ? '🌙' : '☀️'}
           </button>
 
-          <div className="session-indicator">
-            {isAuthenticated ? (
-              <>
-                <span className="user-email">{user?.email || 'User'}</span>
-                <button className="logout-btn" onClick={logout}>
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link to="/login" className="login-link">
-                Login
-              </Link>
-            )}
-          </div>
+          <SessionBadge />
         </div>
       </div>
     </nav>

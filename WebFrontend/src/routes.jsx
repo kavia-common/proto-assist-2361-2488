@@ -1,4 +1,6 @@
 import React from 'react';
+import ProtectedRoute from './components/ProtectedRoute';
+import LoginPage from './pages/LoginPage';
 
 /**
  * Placeholder Components
@@ -15,6 +17,9 @@ const HomePage = () => {
     <div style={{ padding: '2rem' }}>
       <h1>Welcome to Proto Assistant</h1>
       <p>Your AI-powered wireframe generation assistant</p>
+      <p style={{ marginTop: '1rem' }}>
+        Please <a href="/login" style={{ color: 'var(--text-secondary)' }}>login</a> to access the chat, wireframe, and history features.
+      </p>
     </div>
   );
 };
@@ -62,22 +67,9 @@ const HistoryPage = () => {
 };
 
 /**
- * Login page component (placeholder)
- * 
- * PUBLIC_INTERFACE
- */
-const LoginPage = () => {
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Login</h1>
-      <p>Authentication form will be implemented here</p>
-    </div>
-  );
-};
-
-/**
  * Routes configuration
- * Defines all application routes with their components
+ * Defines all application routes with their components.
+ * Protected routes (/chat, /wireframe, /history) are wrapped with ProtectedRoute.
  * 
  * PUBLIC_INTERFACE
  */
@@ -89,17 +81,29 @@ const routes = [
   },
   {
     path: '/chat',
-    element: <ChatPage />,
+    element: (
+      <ProtectedRoute>
+        <ChatPage />
+      </ProtectedRoute>
+    ),
     label: 'Chat'
   },
   {
     path: '/wireframe/:id?',
-    element: <WireframePage />,
+    element: (
+      <ProtectedRoute>
+        <WireframePage />
+      </ProtectedRoute>
+    ),
     label: 'Wireframe'
   },
   {
     path: '/history',
-    element: <HistoryPage />,
+    element: (
+      <ProtectedRoute>
+        <HistoryPage />
+      </ProtectedRoute>
+    ),
     label: 'History'
   },
   {
