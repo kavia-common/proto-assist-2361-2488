@@ -29,6 +29,12 @@
   color: var(--text-secondary);
 }
 
+.navbar-brand a:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .navbar-links {
   display: flex;
   gap: 0.5rem;
@@ -49,9 +55,15 @@
   color: var(--text-secondary);
 }
 
+.nav-link:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 2px;
+}
+
 .nav-link.active {
   background-color: rgba(97, 218, 251, 0.2);
   color: var(--text-secondary);
+  font-weight: 600;
 }
 
 .navbar-actions {
@@ -76,6 +88,12 @@
 .theme-toggle-btn:hover {
   background-color: rgba(97, 218, 251, 0.1);
   transform: scale(1.1);
+}
+
+.theme-toggle-btn:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
 .session-indicator {
@@ -110,6 +128,11 @@
   transform: translateY(-1px);
 }
 
+.logout-btn:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 2px;
+}
+
 .login-link {
   color: var(--text-secondary);
   text-decoration: none;
@@ -121,6 +144,11 @@
 
 .login-link:hover {
   background-color: rgba(97, 218, 251, 0.1);
+}
+
+.login-link:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 2px;
 }
 
 /* Responsive design */

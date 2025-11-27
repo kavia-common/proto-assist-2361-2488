@@ -8,6 +8,10 @@
   --border-color: #e9ecef;
   --button-bg: #007bff;
   --button-text: #ffffff;
+  --focus-ring-color: #61dafb;
+  --error-color: #dc3545;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
 }
 
 [data-theme="dark"] {
@@ -34,10 +38,64 @@
   flex-direction: column;
 }
 
+/* Skip to content link for accessibility */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--text-secondary);
+  color: var(--bg-primary);
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  font-weight: 600;
+  z-index: 10000;
+  border-radius: 0 0 4px 0;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
 .app-content {
   flex: 1;
   background-color: var(--bg-primary);
   transition: background-color 0.3s ease;
+}
+
+/* Focus styles for accessibility */
+*:focus {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 2px;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 2px;
+}
+
+/* Button focus styles */
+button:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 2px;
+}
+
+/* Link focus styles */
+a:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Input focus styles */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 2px;
 }
 
 .App-logo {
@@ -82,5 +140,31 @@
 @media (max-width: 768px) {
   .app-content {
     padding: 0.5rem;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border-color: #000000;
+    --text-primary: #000000;
+    --bg-primary: #ffffff;
+  }
+
+  [data-theme="dark"] {
+    --border-color: #ffffff;
+    --text-primary: #ffffff;
+    --bg-primary: #000000;
   }
 }

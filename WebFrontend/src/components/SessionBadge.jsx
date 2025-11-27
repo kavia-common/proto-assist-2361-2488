@@ -25,20 +25,23 @@ const SessionBadge = () => {
 
   if (isLoading) {
     return (
-      <div className="session-badge loading">
-        <span className="loading-text">Loading...</span>
+      <div className="session-badge loading" role="status" aria-live="polite">
+        <span className="loading-text">Loading session...</span>
       </div>
     );
   }
 
   if (isAuthenticated && user) {
     return (
-      <div className="session-badge authenticated">
-        <span className="user-email">{user.email || user.id}</span>
+      <div className="session-badge authenticated" role="region" aria-label="User session">
+        <span className="user-email" aria-label={`Logged in as ${user.email || user.id}`}>
+          {user.email || user.id}
+        </span>
         <button 
+          type="button"
           className="logout-btn" 
           onClick={handleLogout}
-          aria-label="Logout"
+          aria-label="Logout from account"
         >
           Logout
         </button>
@@ -48,7 +51,7 @@ const SessionBadge = () => {
 
   return (
     <div className="session-badge unauthenticated">
-      <Link to="/login" className="login-link">
+      <Link to="/login" className="login-link" aria-label="Go to login page">
         Login
       </Link>
     </div>

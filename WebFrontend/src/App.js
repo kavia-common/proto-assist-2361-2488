@@ -9,6 +9,7 @@ import './App.css';
  * Layout Component
  * 
  * Provides the main layout structure with Navbar and content area
+ * Includes skip-to-content link for keyboard navigation accessibility
  * 
  * PUBLIC_INTERFACE
  */
@@ -16,8 +17,11 @@ const Layout = () => {
   return (
     <ErrorBoundary>
       <div className="App">
+        <a href="#main-content" className="skip-to-content">
+          Skip to main content
+        </a>
         <Navbar />
-        <main className="app-content">
+        <main id="main-content" className="app-content">
           <Outlet />
         </main>
       </div>

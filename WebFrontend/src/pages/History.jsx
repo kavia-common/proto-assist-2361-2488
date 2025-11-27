@@ -63,51 +63,43 @@ const History = () => {
   return (
     <div className="history-page">
       <div className="history-container">
-        <div className="history-header">
-          <h1>History</h1>
-          <p>View your chat messages and generated wireframes</p>
-        </div>
+        <header className="history-header">
+          <h1 className="page-title">History</h1>
+          <p className="page-description">View your chat messages and generated wireframes</p>
+        </header>
 
         {error && (
-          <div className="history-error" role="alert">
+          <div className="history-error" role="alert" aria-live="polite">
             <span>{error}</span>
             <button 
+              type="button"
               className="error-dismiss" 
               onClick={handleClearError}
-              aria-label="Dismiss error"
+              aria-label="Dismiss error message"
             >
               ×
             </button>
           </div>
         )}
 
-        <div className="history-content">
+        <section className="history-content" aria-label="History content">
           {isLoading && (
-            <div className="history-loading">
-              <div className="loading-spinner"></div>
+            <div className="history-loading" role="status" aria-live="polite">
+              <div className="loading-spinner" aria-hidden="true"></div>
               <p>Loading history...</p>
             </div>
           )}
 
           {!isLoading && error && (
             <div className="history-empty">
-              <div className="empty-icon">⚠️</div>
+              <div className="empty-icon" role="img" aria-label="warning icon">⚠️</div>
               <h2>Failed to Load History</h2>
               <p>{error}</p>
               <button 
+                type="button"
                 onClick={handleRetry}
-                style={{
-                  marginTop: '1rem',
-                  padding: '0.75rem 1.5rem',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  color: 'var(--bg-primary)',
-                  backgroundColor: 'var(--text-secondary)',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
+                className="retry-btn"
+                aria-label="Retry loading history"
               >
                 Retry
               </button>
@@ -120,7 +112,7 @@ const History = () => {
               wireframes={wireframes}
             />
           )}
-        </div>
+        </section>
       </div>
     </div>
   );

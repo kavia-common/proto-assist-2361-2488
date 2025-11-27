@@ -80,10 +80,12 @@ const InputBar = ({ onSendMessage, isDisabled }) => {
   };
 
   return (
-    <div className="input-bar">
-      <form className="input-form" onSubmit={handleSubmit}>
+    <div className="input-bar" role="region" aria-label="Message input area">
+      <form className="input-form" onSubmit={handleSubmit} aria-label="Send message form">
+        <label htmlFor="message-input" className="sr-only">Type your message</label>
         <textarea
           ref={textareaRef}
+          id="message-input"
           className="message-input"
           value={message}
           onChange={handleChange}
@@ -92,12 +94,15 @@ const InputBar = ({ onSendMessage, isDisabled }) => {
           disabled={isDisabled}
           rows={1}
           aria-label="Message input"
+          aria-describedby="message-hint"
         />
+        <span id="message-hint" className="sr-only">Press Enter to send, Shift+Enter for new line</span>
         <button
           type="submit"
           className="send-button"
           disabled={isDisabled || !message.trim()}
           aria-label="Send message"
+          aria-disabled={isDisabled || !message.trim()}
         >
           <svg
             width="20"
@@ -108,6 +113,8 @@ const InputBar = ({ onSendMessage, isDisabled }) => {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            aria-hidden="true"
+            focusable="false"
           >
             <line x1="22" y1="2" x2="11" y2="13"></line>
             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>

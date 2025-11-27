@@ -45,60 +45,73 @@ const Toolbar = ({ onGenerate, onExport, onLoadById, hasWireframe, isLoading }) 
   };
 
   return (
-    <div className="toolbar">
+    <header className="toolbar" role="banner">
       <div className="toolbar-container">
         <div className="toolbar-section">
           <h1 className="toolbar-title">Wireframe Viewer</h1>
         </div>
 
-        <div className="toolbar-actions">
+        <div className="toolbar-actions" role="toolbar" aria-label="Wireframe actions">
           <button
+            type="button"
             className="toolbar-btn toolbar-btn-primary"
             onClick={onGenerate}
             disabled={isLoading}
-            title="Generate wireframe from prompt"
+            aria-label="Generate wireframe from prompt"
+            aria-disabled={isLoading}
           >
-            <span className="btn-icon">✨</span>
+            <span className="btn-icon" role="img" aria-label="sparkles icon">✨</span>
             Generate
           </button>
 
           <button
+            type="button"
             className="toolbar-btn"
             onClick={onExport}
             disabled={!hasWireframe || isLoading}
-            title="Export wireframe"
+            aria-label="Export wireframe"
+            aria-disabled={!hasWireframe || isLoading}
           >
-            <span className="btn-icon">💾</span>
+            <span className="btn-icon" role="img" aria-label="save icon">💾</span>
             Export
           </button>
 
           <button
+            type="button"
             className="toolbar-btn"
             onClick={toggleLoadInput}
             disabled={isLoading}
-            title="Load wireframe by ID"
+            aria-label="Load wireframe by ID"
+            aria-disabled={isLoading}
+            aria-expanded={showLoadInput}
           >
-            <span className="btn-icon">📂</span>
+            <span className="btn-icon" role="img" aria-label="folder icon">📂</span>
             Load by ID
           </button>
         </div>
       </div>
 
       {showLoadInput && (
-        <div className="toolbar-load-section">
+        <div className="toolbar-load-section" role="region" aria-label="Load wireframe by ID">
           <form onSubmit={handleLoadSubmit} className="load-form">
+            <label htmlFor="wireframe-id-input" className="sr-only">
+              Wireframe ID
+            </label>
             <input
               type="text"
+              id="wireframe-id-input"
               className="load-input"
               placeholder="Enter wireframe ID..."
               value={loadId}
               onChange={(e) => setLoadId(e.target.value)}
               autoFocus
+              aria-required="true"
             />
             <button
               type="submit"
               className="load-submit-btn"
               disabled={!loadId.trim()}
+              aria-disabled={!loadId.trim()}
             >
               Load
             </button>
@@ -112,7 +125,7 @@ const Toolbar = ({ onGenerate, onExport, onLoadById, hasWireframe, isLoading }) 
           </form>
         </div>
       )}
-    </div>
+    </header>
   );
 };
 

@@ -91,9 +91,12 @@ const ExportModal = ({ wireframeId, onClose }) => {
   };
 
   /**
-   * Handle escape key to close modal
+   * Handle escape key to close modal and manage focus
    */
   React.useEffect(() => {
+    // Store the element that had focus before modal opened
+    const previousActiveElement = document.activeElement;
+
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
         onClose();
@@ -101,46 +104,102 @@ const ExportModal = ({ wireframeId, onClose }) => {
     };
 
     document.addEventListener('keydown', handleEscape);
+    
     return () => {
       document.removeEventListener('keydown', handleEscape);
+      // Restore focus when modal closes
+      if (previousActiveElement) {
+        previousActiveElement.focus();
+      }
     };
   }, [onClose]);
 
+  /**
+   * Trap focus within modal
+   */
+  React.useEffect(() => {
+    const modalElement = document.querySelector('.export-modal-content');
+    if (!modalElement) return;
+
+    const focusableElements = modalElement.querySelectorAll(
+      'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    // Focus first element
+    if (firstElement) {
+      firstElement.focus();
+    }
+
+    const handleTabKey = (e) => {
+      if (e.key === 'Tab') {
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
+    modalElement.addEventListener('keydown', handleTabKey);
+    return () => {
+      modalElement.removeEventListener('keydown', handleTabKey);
+    };
+  }, [isExporting, exportResult]);
+
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="export-modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2 className="modal-title">Export Wireframe</h2>
+    <div 
+      className="modal-overlay" 
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="export-modal-title"
+    >
+      <div className="export-modal-content" onClick={(e) => e.stopPropagation()} role="document">
+        <header className="modal-header">
+          <h2 id="export-modal-title" className="modal-title">Export Wireframe</h2>
           <button
+            type="button"
             className="modal-close-btn"
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label="Close dialog"
           >
             ×
           </button>
-        </div>
+        </header>
 
         <div className="export-modal-body">
           {/* Format Selection */}
-          <div className="format-selection">
-            <h3 className="section-title">Choose Export Format</h3>
-            <div className="format-options">
+          <div className="format-selection" role="group" aria-labelledby="format-selection-title">
+            <h3 id="format-selection-title" className="section-title">Choose Export Format</h3>
+            <div className="format-options" role="radiogroup" aria-label="Export format options">
               <button
+                type="button"
+                role="radio"
+                aria-checked={selectedFormat === 'image'}
                 className={`format-option ${selectedFormat === 'image' ? 'selected' : ''}`}
                 onClick={() => handleFormatChange('image')}
                 disabled={isExporting}
+                aria-label="Export as PNG image"
               >
-                <span className="format-icon">🖼️</span>
+                <span className="format-icon" role="img" aria-label="image icon">🖼️</span>
                 <span className="format-label">Image</span>
                 <span className="format-description">Export as PNG image</span>
               </button>
 
               <button
+                type="button"
+                role="radio"
+                aria-checked={selectedFormat === 'code'}
                 className={`format-option ${selectedFormat === 'code' ? 'selected' : ''}`}
                 onClick={() => handleFormatChange('code')}
                 disabled={isExporting}
+                aria-label="Export as HTML/CSS code"
               >
-                <span className="format-icon">💻</span>
+                <span className="format-icon" role="img" aria-label="code icon">💻</span>
                 <span className="format-label">Code</span>
                 <span className="format-description">Export as HTML/CSS code</span>
               </button>
@@ -166,16 +225,20 @@ const ExportModal = ({ wireframeId, onClose }) => {
               {selectedFormat === 'code' && exportResult.content && (
                 <div className="code-actions">
                   <button
+                    type="button"
                     className="action-btn"
                     onClick={handleCopyCode}
+                    aria-label="Copy code to clipboard"
                   >
-                    📋 Copy Code
+                    <span role="img" aria-label="clipboard icon">📋</span> Copy Code
                   </button>
                   <button
+                    type="button"
                     className="action-btn"
                     onClick={handleDownload}
+                    aria-label="Download file"
                   >
-                    💾 Download File
+                    <span role="img" aria-label="save icon">💾</span> Download File
                   </button>
                 </div>
               )}

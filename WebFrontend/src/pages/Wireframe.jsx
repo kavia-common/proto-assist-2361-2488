@@ -134,32 +134,33 @@ const Wireframe = () => {
         />
 
         {error && (
-          <div className="wireframe-error" role="alert">
+          <div className="wireframe-error" role="alert" aria-live="polite">
             <span>{error}</span>
             <button 
+              type="button"
               className="error-dismiss" 
               onClick={handleClearError}
-              aria-label="Dismiss error"
+              aria-label="Dismiss error message"
             >
               ×
             </button>
           </div>
         )}
 
-        <div className="wireframe-content">
+        <section className="wireframe-content" aria-label="Wireframe display area">
           {isLoading && (
-            <div className="wireframe-loading">
-              <div className="loading-spinner"></div>
+            <div className="wireframe-loading" role="status" aria-live="polite">
+              <div className="loading-spinner" aria-hidden="true"></div>
               <p>Loading wireframe...</p>
             </div>
           )}
 
           {!isLoading && !currentWireframe && !error && (
             <div className="wireframe-empty">
-              <div className="empty-icon">📐</div>
+              <div className="empty-icon" role="img" aria-label="ruler icon">📐</div>
               <h2>No Wireframe Loaded</h2>
               <p>Generate a new wireframe from a prompt or load an existing one by ID</p>
-              <button className="generate-btn" onClick={handleGenerate}>
+              <button type="button" className="generate-btn" onClick={handleGenerate}>
                 Generate Wireframe
               </button>
             </div>
@@ -168,7 +169,7 @@ const Wireframe = () => {
           {!isLoading && currentWireframe && (
             <WireframeRenderer wireframe={currentWireframe} />
           )}
-        </div>
+        </section>
       </div>
 
       {showPromptModal && (

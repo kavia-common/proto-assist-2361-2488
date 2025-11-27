@@ -19,12 +19,22 @@ const PromptModal = ({ onSubmit, onClose }) => {
   const modalRef = useRef(null);
 
   /**
-   * Focus textarea on mount
+   * Focus textarea on mount and trap focus within modal
    */
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.focus();
     }
+
+    // Store the element that had focus before modal opened
+    const previousActiveElement = document.activeElement;
+
+    return () => {
+      // Restore focus when modal closes
+      if (previousActiveElement) {
+        previousActiveElement.focus();
+      }
+    };
   }, []);
 
   /**
@@ -60,6 +70,37 @@ const PromptModal = ({ onSubmit, onClose }) => {
   }, [onClose]);
 
   /**
+   * Trap focus within modal
+   */
+  useEffect(() => {
+    const modalElement = modalRef.current;
+    if (!modalElement) return;
+
+    const focusableElements = modalElement.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    const handleTabKey = (e) => {
+      if (e.key === 'Tab') {
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
+    modalElement.addEventListener('keydown', handleTabKey);
+    return () => {
+      modalElement.removeEventListener('keydown', handleTabKey);
+    };
+  }, []);
+
+  /**
    * Handle form submission
    */
   const handleSubmit = (e) => {
@@ -70,18 +111,24 @@ const PromptModal = ({ onSubmit, onClose }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content" ref={modalRef}>
-        <div className="modal-header">
-          <h2 className="modal-title">Generate Wireframe</h2>
+    <div 
+      className="modal-overlay" 
+      role="dialog" 
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div className="modal-content" ref={modalRef} role="document">
+        <header className="modal-header">
+          <h2 id="modal-title" className="modal-title">Generate Wireframe</h2>
           <button
+            type="button"
             className="modal-close-btn"
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label="Close dialog"
           >
             ×
           </button>
-        </div>
+        </header>
 
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="form-group">
@@ -96,8 +143,10 @@ const PromptModal = ({ onSubmit, onClose }) => {
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="E.g., Create a login page with email, password fields, and a submit button"
               rows={6}
+              aria-required="true"
+              aria-describedby="prompt-hint"
             />
-            <p className="form-hint">
+            <p id="prompt-hint" className="form-hint">
               Be specific about the layout, components, and functionality you need.
             </p>
           </div>
@@ -114,6 +163,7 @@ const PromptModal = ({ onSubmit, onClose }) => {
               type="submit"
               className="modal-btn modal-btn-submit"
               disabled={!prompt.trim()}
+              aria-disabled={!prompt.trim()}
             >
               Generate
             </button>

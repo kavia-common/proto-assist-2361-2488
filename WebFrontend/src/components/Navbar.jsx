@@ -26,34 +26,42 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
+    <nav className="navbar" role="navigation" aria-label="Main navigation">
       <div className="navbar-container">
         <div className="navbar-brand">
-          <Link to="/">Proto Assistant</Link>
+          <Link to="/" aria-label="Proto Assistant home">Proto Assistant</Link>
         </div>
 
-        <div className="navbar-links">
+        <div className="navbar-links" role="menubar">
           <Link 
             to="/" 
             className={isActive('/') ? 'nav-link active' : 'nav-link'}
+            role="menuitem"
+            aria-current={isActive('/') ? 'page' : undefined}
           >
             Home
           </Link>
           <Link 
             to="/chat" 
             className={isActive('/chat') ? 'nav-link active' : 'nav-link'}
+            role="menuitem"
+            aria-current={isActive('/chat') ? 'page' : undefined}
           >
             Chat
           </Link>
           <Link 
             to="/wireframe" 
             className={isActive('/wireframe') ? 'nav-link active' : 'nav-link'}
+            role="menuitem"
+            aria-current={isActive('/wireframe') ? 'page' : undefined}
           >
             Wireframe
           </Link>
           <Link 
             to="/history" 
             className={isActive('/history') ? 'nav-link active' : 'nav-link'}
+            role="menuitem"
+            aria-current={isActive('/history') ? 'page' : undefined}
           >
             History
           </Link>
@@ -63,20 +71,26 @@ const Navbar = () => {
             <Link 
               to="/advanced" 
               className={isActive('/advanced') ? 'nav-link active' : 'nav-link'}
-              title="Advanced features (feature flag enabled)"
+              role="menuitem"
+              aria-current={isActive('/advanced') ? 'page' : undefined}
+              aria-label="Advanced features (feature flag enabled)"
             >
               Advanced
             </Link>
           )}
         </div>
 
-        <div className="navbar-actions">
+        <div className="navbar-actions" role="toolbar" aria-label="User actions">
           <button 
             className="theme-toggle-btn" 
             onClick={toggleTheme}
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            aria-pressed={theme === 'dark'}
+            type="button"
           >
-            {theme === 'light' ? '🌙' : '☀️'}
+            <span role="img" aria-label={theme === 'light' ? 'moon icon' : 'sun icon'}>
+              {theme === 'light' ? '🌙' : '☀️'}
+            </span>
           </button>
 
           <SessionBadge />

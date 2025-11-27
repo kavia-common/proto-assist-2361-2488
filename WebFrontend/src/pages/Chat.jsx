@@ -103,18 +103,19 @@ const Chat = () => {
   return (
     <div className="chat-page">
       <div className="chat-container">
-        <div className="chat-header">
-          <h1>Chat with Proto Assistant</h1>
-          <p>Ask me to create wireframes or help with your design</p>
-        </div>
+        <header className="chat-header">
+          <h1 className="page-title">Chat with Proto Assistant</h1>
+          <p className="page-description">Ask me to create wireframes or help with your design</p>
+        </header>
 
         {error && (
-          <div className="chat-error" role="alert">
+          <div className="chat-error" role="alert" aria-live="polite">
             <span>{error}</span>
             <button 
+              type="button"
               className="error-dismiss" 
               onClick={handleClearError}
-              aria-label="Dismiss error"
+              aria-label="Dismiss error message"
             >
               ×
             </button>
