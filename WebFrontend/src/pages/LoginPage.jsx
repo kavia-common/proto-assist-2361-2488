@@ -126,7 +126,13 @@ const LoginPage = () => {
         </form>
 
         <div className="login-footer">
-          <p>Your AI-powered wireframe generation assistant</p>
+          <p>
+            Don't have an account?{' '}
+            <a href="/signup" className="signup-link">
+              Sign up here
+            </a>
+          </p>
+          <p className="footer-tagline">Your AI-powered wireframe generation assistant</p>
         </div>
       </div>
     </div>

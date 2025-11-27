@@ -1,6 +1,7 @@
 import React from 'react';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import Chat from './pages/Chat';
 import Wireframe from './pages/Wireframe';
 import History from './pages/History';
@@ -72,6 +73,11 @@ const routes = [
     path: '/login',
     element: <LoginPage />,
     label: 'Login'
+  },
+  {
+    path: '/signup',
+    element: <SignupPage />,
+    label: 'Sign Up'
   },
   {
     path: '/health',

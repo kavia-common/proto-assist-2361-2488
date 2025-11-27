@@ -9,6 +9,7 @@
 
 export { default as httpClient } from './httpClient';
 export { default as sessionApi } from './sessionApi';
+export { default as registrationApi } from './registrationApi';
 export { default as chatApi } from './chatApi';
 export { default as wireframeApi } from './wireframeApi';
 export { default as historyApi } from './historyApi';
@@ -21,6 +22,11 @@ export {
   endSession,
   validateSession
 } from './sessionApi';
+
+export {
+  register,
+  checkUserIdAvailability
+} from './registrationApi';
 
 export {
   sendMessage,

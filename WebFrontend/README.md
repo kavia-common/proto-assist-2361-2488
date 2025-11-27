@@ -11,6 +11,7 @@ Proto Assistant is a chat application designed to connect users with an intellig
 - [Folder Structure](#folder-structure)
 - [Available Routes](#available-routes)
 - [Authentication Flow](#authentication-flow)
+- [User Registration Flow](#user-registration-flow)
 - [Demo Login (Development Mode)](#demo-login-development-mode)
 - [API Integration](#api-integration)
 - [Logging and Debugging](#logging-and-debugging)
@@ -197,6 +198,7 @@ The application uses environment variables prefixed with `REACT_APP_` for config
 | Variable | Description | Values | Default |
 |----------|-------------|--------|---------|
 | `REACT_APP_ENABLE_DEMO_LOGIN` | Enable demo login button for local testing | `true`, `false` | Auto (enabled in dev) |
+| `REACT_APP_ENABLE_SIGNUP` | Enable user registration/signup feature | `true`, `false` | `true` |
 
 **Demo Login Feature:**
 - Provides a mock authentication path that bypasses backend API calls
@@ -288,6 +290,13 @@ REACT_APP_EXPERIMENTS_ENABLED=false
 # Automatically enabled in development (NODE_ENV !== 'production')
 # Set to false to explicitly disable even in development
 REACT_APP_ENABLE_DEMO_LOGIN=true
+
+# ─────────────────────────────────────────────────────────────
+# User Registration/Signup
+# ─────────────────────────────────────────────────────────────
+# Enable or disable user registration feature
+# Enabled by default, set to false to disable signup page
+REACT_APP_ENABLE_SIGNUP=true
 
 # ─────────────────────────────────────────────────────────────
 # Environment
@@ -388,6 +397,7 @@ The application provides the following routes:
 |-------|-----------|---------------|-------------|
 | `/` | HomePage | No | Landing page with welcome message |
 | `/login` | LoginPage | No | User authentication page |
+| `/signup` | SignupPage | No | User registration page |
 | `/chat` | Chat | **Yes** | Main chat interface with AI Agent |
 | `/wireframe/:id?` | Wireframe | **Yes** | Wireframe viewer/editor (optional ID parameter) |
 | `/history` | History | **Yes** | Conversation and wireframe history |
@@ -499,6 +509,204 @@ The `ProtectedRoute` component wraps authenticated pages:
 | Session Expired | Token expired (401 response) | Auto logout, redirect to login |
 | Demo Mode | Development/testing session | Full access, no backend calls |
 
+## User Registration Flow
+
+The application provides a user registration page that allows new users to create accounts.
+
+### Registration Sequence
+
+```
+┌─────────┐                 ┌──────────────┐                 ┌─────────┐
+│  User   │                 │  WebFrontend │                 │ Backend │
+└────┬────┘                 └──────┬───────┘                 └────┬────┘
+     │                             │                              │
+     │ 1. Navigate to /signup      │                              │
+     ├────────────────────────────►│                              │
+     │                             │                              │
+     │ 2. Fill registration form   │                              │
+     │    - user_id (required)     │                              │
+     │    - email (optional)       │                              │
+     │    - password (required)    │                              │
+     │    - confirm password       │                              │
+     ├────────────────────────────►│                              │
+     │                             │                              │
+     │ 3. Client-side validation   │                              │
+     │                             │◄──┐                          │
+     │                             │   │                          │
+     │                             │───┘                          │
+     │                             │                              │
+     │ 4. Submit registration      │                              │
+     │                             │                              │
+     │                             │ 5. POST /register            │
+     │                             ├─────────────────────────────►│
+     │                             │    {user_id, password,       │
+     │                             │     email?}                  │
+     │                             │                              │
+     │                             │ 6. Registration result       │
+     │                             │◄─────────────────────────────┤
+     │                             │                              │
+     │                             │ 7. Attempt auto-login        │
+     │                             ├─────────────────────────────►│
+     │                             │    POST /session             │
+     │                             │                              │
+     │                             │ 8. Session + token           │
+     │                             │◄─────────────────────────────┤
+     │                             │                              │
+     │                             │ 9. Store token               │
+     │                             │◄──┐                          │
+     │                             │   │                          │
+     │                             │───┘                          │
+     │                             │                              │
+     │ 10. Redirect to /chat       │                              │
+     │    (or /login with success) │                              │
+     │◄────────────────────────────┤                              │
+     │                             │                              │
+```
+
+### Registration Form Fields
+
+| Field | Required | Validation | Description |
+|-------|----------|------------|-------------|
+| **user_id** | Yes | Min 3 chars, alphanumeric + `-_` | Unique username identifier |
+| **email** | No | Valid email format | User email address (optional per spec) |
+| **password** | Yes | Min 8 chars, uppercase, lowercase, number | Secure password |
+| **confirm password** | Yes | Must match password | Password confirmation |
+
+### Form Validation
+
+The signup form includes comprehensive client-side validation:
+
+- **User ID**: 
+  - Required field
+  - Minimum 3 characters
+  - Only letters, numbers, hyphens, and underscores allowed
+  - Format: `^[a-zA-Z0-9_-]+$`
+
+- **Email** (optional):
+  - Valid email format if provided
+  - Can be left empty
+  - Format: standard email regex
+
+- **Password**:
+  - Required field
+  - Minimum 8 characters
+  - Must contain at least one uppercase letter
+  - Must contain at least one lowercase letter
+  - Must contain at least one number
+  - Password strength indicator shows requirements
+
+- **Confirm Password**:
+  - Required field
+  - Must exactly match password field
+
+### Success Flow
+
+After successful registration, the system attempts two possible flows:
+
+**Flow 1: Auto-Login (Preferred)**
+1. Registration succeeds
+2. Backend returns session token
+3. Frontend automatically logs in user with credentials
+4. User redirected to `/chat` immediately
+5. Success message: "Account created successfully!"
+
+**Flow 2: Manual Login**
+1. Registration succeeds
+2. Backend does not return token (or auto-login fails)
+3. User redirected to `/login` page
+4. Success message displayed: "Account created successfully! Please log in."
+5. User manually logs in with new credentials
+
+### Feature Flag Control
+
+Registration can be enabled or disabled via environment variable:
+
+```bash
+# Enable signup (default)
+REACT_APP_ENABLE_SIGNUP=true
+
+# Disable signup
+REACT_APP_ENABLE_SIGNUP=false
+```
+
+When disabled, the signup page shows:
+- Message: "User registration is currently disabled"
+- Link to return to login page
+- No form is displayed
+
+### Backend Dependency
+
+**IMPORTANT**: The signup feature depends on the backend `/register` endpoint.
+
+**Backend Endpoint Requirements:**
+- **URL**: `POST /register`
+- **Request Body**:
+  ```json
+  {
+    "user_id": "string",
+    "password": "string",
+    "email": "string (optional)"
+  }
+  ```
+- **Success Response** (200):
+  ```json
+  {
+    "user_id": "string",
+    "token": "string (optional)",
+    "session_id": "string (optional)",
+    "message": "Registration successful"
+  }
+  ```
+- **Error Response** (4xx/5xx):
+  ```json
+  {
+    "error": "ErrorType",
+    "message": "Error description",
+    "code": 409
+  }
+  ```
+
+**Common Error Codes:**
+- `409 Conflict`: User ID already exists
+- `400 Bad Request`: Invalid input data
+- `500 Internal Server Error`: Server-side error
+
+### Error Handling
+
+The signup page handles various error scenarios:
+
+| Error | Handling |
+|-------|----------|
+| User ID already exists | Display: "User ID already exists. Please choose a different one." |
+| Invalid input | Display backend error message |
+| Network error | Display: "Registration failed. Please try again." |
+| Auto-login fails | Redirect to login with success message |
+| Backend not ready | Display info message (if configured) |
+
+### Using the Signup Page
+
+1. **Access**: Navigate to `http://localhost:3000/signup` or click "Sign up here" link on login page
+2. **Fill Form**: Enter user_id, optional email, password, and confirm password
+3. **Validate**: Real-time validation shows errors as you type
+4. **Submit**: Click "Create Account" button
+5. **Wait**: Loading state shows "Creating Account..."
+6. **Success**: Either auto-logged in or redirected to login
+
+### Development Notes
+
+- Signup is always visible with a link from the login page
+- If backend `/register` endpoint is not ready, users will see error messages
+- Use demo login feature for testing without backend
+- Feature flag allows hiding signup UI in production if needed
+
+### Security Considerations
+
+- All password validation is performed on both client and server
+- Passwords are never stored in localStorage
+- Email is optional to reduce friction (per spec)
+- User IDs are validated to prevent injection attacks
+- HTTPS should be used in production for all registration requests
+
 ## Demo Login (Development Mode)
 
 The application includes a demo login feature for local testing and development without requiring a running backend server.
@@ -604,6 +812,7 @@ REACT_APP_API_BASE=https://api.protoassistant.com/v1
 
 | Endpoint | Method | Auth | Description |
 |----------|--------|------|-------------|
+| `/register` | POST | No | Register new user account |
 | `/session` | POST | No | Login and create session |
 | `/session` | GET | Yes | Get current session status |
 | `/chat` | POST | Yes | Send message and receive AI response |

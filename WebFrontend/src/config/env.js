@@ -75,6 +75,20 @@ const getEnableDemoLogin = () => {
   return nodeEnv !== 'production';
 };
 
+/**
+ * Check if signup/registration is enabled
+ * Enabled by default unless explicitly disabled
+ */
+const getEnableSignup = () => {
+  // If explicitly set, use that value
+  if (process.env.REACT_APP_ENABLE_SIGNUP !== undefined) {
+    return process.env.REACT_APP_ENABLE_SIGNUP === 'true';
+  }
+  
+  // Otherwise, enabled by default
+  return true;
+};
+
 // PUBLIC_INTERFACE
 /**
  * Environment configuration object
@@ -87,6 +101,7 @@ const env = {
   featureFlags: getFeatureFlags(),
   experimentsEnabled: getExperimentsEnabled(),
   enableDemoLogin: getEnableDemoLogin(),
+  enableSignup: getEnableSignup(),
   nodeEnv: process.env.REACT_APP_NODE_ENV || process.env.NODE_ENV || 'development',
   frontendUrl: process.env.REACT_APP_FRONTEND_URL || 'http://localhost:3000',
   port: process.env.REACT_APP_PORT || '3000',
