@@ -10,3 +10,4 @@ export { default as LoginPage } from './LoginPage';
 export { default as Chat } from './Chat';
 export { default as Wireframe } from './Wireframe';
 export { default as History } from './History';
+export { default as Healthcheck } from './Healthcheck';

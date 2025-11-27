@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import Chat from './pages/Chat';
 import Wireframe from './pages/Wireframe';
 import History from './pages/History';
+import Healthcheck from './pages/Healthcheck';
 
 /**
  * Placeholder Components
@@ -71,6 +72,11 @@ const routes = [
     path: '/login',
     element: <LoginPage />,
     label: 'Login'
+  },
+  {
+    path: '/health',
+    element: <Healthcheck />,
+    label: 'Health'
   }
 ];
 

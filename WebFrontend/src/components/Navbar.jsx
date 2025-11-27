@@ -78,6 +78,19 @@ const Navbar = () => {
               Advanced
             </Link>
           )}
+          
+          {/* Healthcheck link - shown if showHealthcheck feature flag is enabled or in development */}
+          {(isFeatureEnabled('showHealthcheck') || process.env.NODE_ENV === 'development') && (
+            <Link 
+              to="/health" 
+              className={isActive('/health') ? 'nav-link active' : 'nav-link'}
+              role="menuitem"
+              aria-current={isActive('/health') ? 'page' : undefined}
+              aria-label="System health and configuration"
+            >
+              Health
+            </Link>
+          )}
         </div>
 
         <div className="navbar-actions" role="toolbar" aria-label="User actions">
