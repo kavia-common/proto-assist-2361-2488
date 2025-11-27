@@ -3,6 +3,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import Chat from './pages/Chat';
 import Wireframe from './pages/Wireframe';
+import History from './pages/History';
 
 /**
  * Placeholder Components
@@ -22,20 +23,6 @@ const HomePage = () => {
       <p style={{ marginTop: '1rem' }}>
         Please <a href="/login" style={{ color: 'var(--text-secondary)' }}>login</a> to access the chat, wireframe, and history features.
       </p>
-    </div>
-  );
-};
-
-/**
- * History page component (placeholder)
- * 
- * PUBLIC_INTERFACE
- */
-const HistoryPage = () => {
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h1>History</h1>
-      <p>Chat and wireframe history will be displayed here</p>
     </div>
   );
 };
@@ -75,7 +62,7 @@ const routes = [
     path: '/history',
     element: (
       <ProtectedRoute>
-        <HistoryPage />
+        <History />
       </ProtectedRoute>
     ),
     label: 'History'
