@@ -1,4 +1,5 @@
 import env from '../config/env';
+import logger from '../utils/logger';
 
 /**
  * HTTP Client Module
@@ -125,6 +126,9 @@ const request = async (endpoint, options = {}) => {
   }
 
   try {
+    // Log API request
+    logger.logApiRequest(method, endpoint, body);
+    
     const response = await fetch(url, fetchOptions);
 
     // Handle 401 immediately
@@ -152,8 +156,12 @@ const request = async (endpoint, options = {}) => {
     // Handle error responses
     if (!response.ok) {
       const error = await normalizeError(response, responseBody);
+      logger.logApiError(method, endpoint, error);
       throw error;
     }
+
+    // Log successful response
+    logger.logApiResponse(method, endpoint, response.status, responseBody);
 
     // Return parsed response body
     return responseBody;

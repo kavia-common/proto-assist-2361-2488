@@ -13,7 +13,7 @@ import './Navbar.css';
  */
 const Navbar = () => {
   const location = useLocation();
-  const { theme, toggleTheme } = useApp();
+  const { theme, toggleTheme, isFeatureEnabled } = useApp();
 
   /**
    * Check if a route is currently active
@@ -57,6 +57,17 @@ const Navbar = () => {
           >
             History
           </Link>
+          
+          {/* Conditional feature flag demo - show additional nav item if enabled */}
+          {isFeatureEnabled('showAdvancedFeatures') && (
+            <Link 
+              to="/advanced" 
+              className={isActive('/advanced') ? 'nav-link active' : 'nav-link'}
+              title="Advanced features (feature flag enabled)"
+            >
+              Advanced
+            </Link>
+          )}
         </div>
 
         <div className="navbar-actions">

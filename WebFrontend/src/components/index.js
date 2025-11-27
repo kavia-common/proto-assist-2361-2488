@@ -17,3 +17,4 @@ export { default as ExportModal } from './ExportModal';
 export { default as HistoryList } from './HistoryList';
 export { default as SessionBadge } from './SessionBadge';
 export { default as ProtectedRoute } from './ProtectedRoute';
+export { default as ErrorBoundary } from './ErrorBoundary';

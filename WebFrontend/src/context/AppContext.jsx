@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import env from '../config/env';
+import logger from '../utils/logger';
 
 /**
  * AppContext
@@ -47,7 +48,18 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
+    logger.info(`Theme changed to: ${theme}`);
   }, [theme]);
+
+  // Log app initialization
+  useEffect(() => {
+    logger.info('Application initialized', {
+      nodeEnv: env.nodeEnv,
+      logLevel: env.logLevel,
+      experimentsEnabled: env.experimentsEnabled,
+      featureFlags: env.featureFlags
+    });
+  }, []);
 
   /**
    * Toggle between light and dark theme
@@ -83,7 +95,8 @@ export const AppProvider = ({ children }) => {
     featureFlags,
     updateFeatureFlags,
     isFeatureEnabled,
-    experimentsEnabled
+    experimentsEnabled,
+    logger
   };
 
   return (

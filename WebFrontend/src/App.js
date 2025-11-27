@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import ErrorBoundary from './components/ErrorBoundary';
 import routes from './routes';
 import './App.css';
 
@@ -13,12 +14,14 @@ import './App.css';
  */
 const Layout = () => {
   return (
-    <div className="App">
-      <Navbar />
-      <main className="app-content">
-        <Outlet />
-      </main>
-    </div>
+    <ErrorBoundary>
+      <div className="App">
+        <Navbar />
+        <main className="app-content">
+          <Outlet />
+        </main>
+      </div>
+    </ErrorBoundary>
   );
 };
 
