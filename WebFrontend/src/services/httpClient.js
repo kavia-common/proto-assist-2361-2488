@@ -172,11 +172,10 @@ const request = async (endpoint, options = {}) => {
     }
 
     // Handle network errors or other fetch failures
-    throw {
-      error: 'NetworkError',
-      message: error.message || 'Network request failed',
-      code: 0
-    };
+    const networkError = new Error(error.message || 'Network request failed');
+    networkError.error = 'NetworkError';
+    networkError.code = 0;
+    throw networkError;
   }
 };
 
