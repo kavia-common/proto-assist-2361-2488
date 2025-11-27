@@ -2,6 +2,7 @@ import React from 'react';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import Chat from './pages/Chat';
+import Wireframe from './pages/Wireframe';
 
 /**
  * Placeholder Components
@@ -21,20 +22,6 @@ const HomePage = () => {
       <p style={{ marginTop: '1rem' }}>
         Please <a href="/login" style={{ color: 'var(--text-secondary)' }}>login</a> to access the chat, wireframe, and history features.
       </p>
-    </div>
-  );
-};
-
-/**
- * Wireframe page component (placeholder)
- * 
- * PUBLIC_INTERFACE
- */
-const WireframePage = () => {
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Wireframe</h1>
-      <p>Wireframe viewer and editor will be implemented here</p>
     </div>
   );
 };
@@ -79,7 +66,7 @@ const routes = [
     path: '/wireframe/:id?',
     element: (
       <ProtectedRoute>
-        <WireframePage />
+        <Wireframe />
       </ProtectedRoute>
     ),
     label: 'Wireframe'

@@ -1,0 +1,154 @@
+.wireframe-renderer {
+  padding: 2rem;
+  background-color: var(--bg-primary);
+  min-height: 100%;
+}
+
+.wireframe-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.wireframe-title {
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+}
+
+.wireframe-description {
+  font-size: 0.95rem;
+  margin: 0;
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.wireframe-canvas {
+  padding: 1.5rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  min-height: 400px;
+}
+
+/* Component Styles */
+.wf-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background-color: var(--text-secondary);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wf-button:hover {
+  opacity: 0.9;
+}
+
+.wf-input {
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  width: 100%;
+  max-width: 400px;
+}
+
+.wf-input:focus {
+  outline: none;
+  border-color: var(--text-secondary);
+  box-shadow: 0 0 0 3px rgba(97, 218, 251, 0.1);
+}
+
+.wf-text {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.wf-heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.wf-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: rgba(97, 218, 251, 0.05);
+}
+
+.wf-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  background-color: rgba(97, 218, 251, 0.1);
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.image-placeholder {
+  font-size: 1rem;
+}
+
+.wf-generic {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-primary);
+}
+
+.component-type {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.6;
+  letter-spacing: 0.5px;
+}
+
+.no-components {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--text-primary);
+  opacity: 0.5;
+}
+
+.wireframe-footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.metadata-label {
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .wireframe-renderer {
+    padding: 1rem;
+  }
+
+  .wireframe-canvas {
+    padding: 1rem;
+    min-height: 300px;
+  }
+
+  .wf-input {
+    max-width: 100%;
+  }
+}
