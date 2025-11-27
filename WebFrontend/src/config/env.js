@@ -59,6 +59,22 @@ const getExperimentsEnabled = () => {
   return process.env.REACT_APP_EXPERIMENTS_ENABLED === 'true';
 };
 
+/**
+ * Check if demo login is enabled
+ * Enabled by default in non-production environments or via explicit flag
+ */
+const getEnableDemoLogin = () => {
+  const nodeEnv = process.env.REACT_APP_NODE_ENV || process.env.NODE_ENV || 'development';
+  
+  // If explicitly set, use that value
+  if (process.env.REACT_APP_ENABLE_DEMO_LOGIN !== undefined) {
+    return process.env.REACT_APP_ENABLE_DEMO_LOGIN === 'true';
+  }
+  
+  // Otherwise, enable in non-production environments
+  return nodeEnv !== 'production';
+};
+
 // PUBLIC_INTERFACE
 /**
  * Environment configuration object
@@ -70,6 +86,7 @@ const env = {
   logLevel: getLogLevel(),
   featureFlags: getFeatureFlags(),
   experimentsEnabled: getExperimentsEnabled(),
+  enableDemoLogin: getEnableDemoLogin(),
   nodeEnv: process.env.REACT_APP_NODE_ENV || process.env.NODE_ENV || 'development',
   frontendUrl: process.env.REACT_APP_FRONTEND_URL || 'http://localhost:3000',
   port: process.env.REACT_APP_PORT || '3000',

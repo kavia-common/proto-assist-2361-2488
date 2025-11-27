@@ -11,6 +11,7 @@ Proto Assistant is a chat application designed to connect users with an intellig
 - [Folder Structure](#folder-structure)
 - [Available Routes](#available-routes)
 - [Authentication Flow](#authentication-flow)
+- [Demo Login (Development Mode)](#demo-login-development-mode)
 - [API Integration](#api-integration)
 - [Logging and Debugging](#logging-and-debugging)
 - [Testing](#testing)
@@ -23,6 +24,7 @@ Proto Assistant is a chat application designed to connect users with an intellig
 - **Dynamic Chat Interface**: Real-time communication with the AI Agent for wireframe generation
 - **Wireframe Visualization**: Interactive display and editing of generated wireframes
 - **Session Management**: Secure user authentication with JWT-based session handling
+- **Demo Login**: Optional development-only login bypass for local testing
 - **Export Functionality**: Export wireframes as images or code snippets
 - **History Tracking**: View and retrieve past conversations and wireframes
 - **Health Monitoring**: Built-in health check page with configuration viewer
@@ -39,10 +41,10 @@ The WebFrontend follows a modern React architecture with clear separation of con
 ### High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        Browser                               │
+┌───────────────────────────────────────────────────────────┐
+│                        Browser                            │
 │  ┌───────────────────────────────────────────────────────┐  │
-│  │                   React Application                    │  │
+│  │                   React Application                   │  │
 │  │  ┌─────────────┐  ┌──────────────┐  ┌─────────────┐  │  │
 │  │  │   Pages     │◄─┤   Context    │──►│ Components  │  │  │
 │  │  │             │  │  Providers   │  │             │  │  │
@@ -51,18 +53,18 @@ The WebFrontend follows a modern React architecture with clear separation of con
 │  │  │ - History   │  │ - Session    │  │ - Wireframe │  │  │
 │  │  │ - Login     │  │   Context    │  │   Renderer  │  │  │
 │  │  └──────┬──────┘  └──────────────┘  └─────────────┘  │  │
-│  │         │                                              │  │
-│  │         └────────────┐                                 │  │
-│  │                ┌─────▼──────┐                          │  │
-│  │                │  Services  │                          │  │
-│  │                │            │                          │  │
-│  │                │ httpClient │                          │  │
-│  │                │ chatApi    │                          │  │
-│  │                │ sessionApi │                          │  │
-│  │                │ wireframeApi                          │  │
-│  │                │ exportApi  │                          │  │
-│  │                │ historyApi │                          │  │
-│  │                └─────┬──────┘                          │  │
+│  │         │                                             │  │
+│  │         └────────────┐                                │  │
+│  │                ┌─────▼──────┐                         │  │
+│  │                │  Services  │                         │  │
+│  │                │            │                         │  │
+│  │                │ httpClient │                         │  │
+│  │                │ chatApi    │                         │  │
+│  │                │ sessionApi │                         │  │
+│  │                │ wireframeApi                         │  │
+│  │                │ exportApi  │                         │  │
+│  │                │ historyApi │                         │  │
+│  │                └─────┬──────┘                         │  │
 │  └──────────────────────┼─────────────────────────────────┘  │
 └─────────────────────────┼─────────────────────────────────────┘
                           │ HTTP/HTTPS
@@ -105,7 +107,7 @@ The WebFrontend follows a modern React architecture with clear separation of con
 
 - **Node.js** 14.x or higher
 - **npm** 6.x or higher
-- **Backend API Server**: The backend container must be running and accessible
+- **Backend API Server**: The backend container must be running and accessible (optional for demo mode)
 
 ### Installation
 
@@ -190,6 +192,20 @@ The application uses environment variables prefixed with `REACT_APP_` for config
 | `REACT_APP_PORT` | Application port | `3000` |
 | `REACT_APP_NODE_ENV` | Node environment override | `development` |
 
+### Development and Testing
+
+| Variable | Description | Values | Default |
+|----------|-------------|--------|---------|
+| `REACT_APP_ENABLE_DEMO_LOGIN` | Enable demo login button for local testing | `true`, `false` | Auto (enabled in dev) |
+
+**Demo Login Feature:**
+- Provides a mock authentication path that bypasses backend API calls
+- Automatically enabled in non-production environments (`NODE_ENV !== 'production'`)
+- Sets a mock token (`demo-token`) and mock session data in localStorage
+- Displays visible "DEMO MODE" banner when active
+- Intended for local development and testing only
+- **Security Note**: Always disable in production by setting `REACT_APP_ENABLE_DEMO_LOGIN=false` or ensuring `NODE_ENV=production`
+
 ### Logging and Debugging
 
 | Variable | Description | Values | Default |
@@ -265,6 +281,13 @@ REACT_APP_HEALTHCHECK_PATH=/health
 # ─────────────────────────────────────────────────────────────
 REACT_APP_FEATURE_FLAGS=showHealthcheck:true
 REACT_APP_EXPERIMENTS_ENABLED=false
+
+# ─────────────────────────────────────────────────────────────
+# Demo Login (Development/Testing)
+# ─────────────────────────────────────────────────────────────
+# Automatically enabled in development (NODE_ENV !== 'production')
+# Set to false to explicitly disable even in development
+REACT_APP_ENABLE_DEMO_LOGIN=true
 
 # ─────────────────────────────────────────────────────────────
 # Environment
@@ -386,6 +409,7 @@ The Navbar component displays links based on authentication status:
 - **Logged Out**: Home, Login
 - **Logged In**: Home, Chat, Wireframe, History, Logout
 - **Development Mode**: Health link always visible
+- **Demo Mode**: Purple banner displays at top with "🚀 DEMO" badge in session
 
 ## Authentication Flow
 
@@ -450,7 +474,7 @@ The application implements JWT-based authentication with session persistence:
 ### Session Management
 
 1. **Login**: User submits credentials to `/session` endpoint
-2. **Token Storage**: JWT token stored in `localStorage.getItem('authToken')`
+2. **Token Storage**: JWT token stored in `localStorage.getItem('auth_token')`
 3. **Token Usage**: Automatically included in all API requests via httpClient
 4. **Session Validation**: SessionContext checks token on app load
 5. **Token Expiration**: 401 responses trigger automatic logout and redirect
@@ -463,6 +487,7 @@ The `ProtectedRoute` component wraps authenticated pages:
 - Shows loading state while session is being validated
 - Redirects to `/login` if not authenticated
 - Preserves intended destination for post-login redirect
+- Treats demo mode sessions as authenticated (development only)
 
 ### Authentication States
 
@@ -472,6 +497,91 @@ The `ProtectedRoute` component wraps authenticated pages:
 | Authenticated | Valid token exists | Access to protected routes |
 | Unauthenticated | No token or invalid token | Redirect to login page |
 | Session Expired | Token expired (401 response) | Auto logout, redirect to login |
+| Demo Mode | Development/testing session | Full access, no backend calls |
+
+## Demo Login (Development Mode)
+
+The application includes a demo login feature for local testing and development without requiring a running backend server.
+
+### Enabling Demo Login
+
+Demo login is **automatically enabled** in development mode:
+- When `NODE_ENV !== 'production'`
+- Or when `REACT_APP_NODE_ENV !== 'production'`
+
+To **explicitly control** the feature:
+
+```bash
+# Enable demo login (even in production - not recommended)
+REACT_APP_ENABLE_DEMO_LOGIN=true
+
+# Disable demo login (even in development)
+REACT_APP_ENABLE_DEMO_LOGIN=false
+```
+
+### Using Demo Login
+
+1. Start the application: `npm start`
+2. Navigate to the login page: `http://localhost:3000/login`
+3. Click the **"🚀 Demo Login (Dev Mode)"** button
+4. You will be automatically logged in with mock credentials:
+   - **User ID**: `demo-user`
+   - **Email**: `demo@protoassistant.local`
+   - **Token**: `demo-token`
+5. A purple **"DEMO MODE"** banner appears at the top of the page
+6. The session badge shows a **"🚀 DEMO"** indicator
+
+### Demo Mode Behavior
+
+When in demo mode:
+- ✅ **All protected routes are accessible** (Chat, Wireframe, History)
+- ✅ **Session persists** across page refreshes (stored in localStorage)
+- ✅ **No backend API calls** are made for authentication
+- ✅ **Visible indicators** show that you're in demo mode:
+  - Purple banner at the top: "DEMO MODE - Development testing session active"
+  - Demo badge in session badge: "🚀 DEMO"
+- ❌ **Backend-dependent features** may not work (actual chat, wireframe generation, history)
+- ❌ **Not suitable for production** - purely for UI testing and development
+
+### When to Use Demo Login
+
+**Use demo login when:**
+- Testing UI components without backend
+- Developing frontend features in isolation
+- Demonstrating the application interface
+- Running frontend tests
+- Backend is temporarily unavailable
+
+**Do NOT use demo login for:**
+- Production deployments
+- Integration testing with real backend
+- User acceptance testing
+- Any scenario requiring real data or backend interaction
+
+### Disabling Demo Login in Production
+
+To ensure demo login is disabled in production:
+
+**Option 1**: Set environment to production
+```bash
+NODE_ENV=production
+REACT_APP_NODE_ENV=production
+```
+
+**Option 2**: Explicitly disable the feature
+```bash
+REACT_APP_ENABLE_DEMO_LOGIN=false
+```
+
+**Verification**: The demo login button will not appear on the login page when properly disabled.
+
+### Security Considerations
+
+- Demo sessions use a hardcoded token (`demo-token`) that does not authenticate with the backend
+- The feature is designed for development environments only
+- Backend API endpoints should still enforce proper authentication
+- Demo mode is clearly indicated to prevent confusion with real authentication
+- Always verify `REACT_APP_ENABLE_DEMO_LOGIN=false` in production deployments
 
 ## API Integration
 
@@ -779,6 +889,7 @@ In production environments, consider restricting access to `/health` or disablin
 3. Check CORS configuration on backend (see [API Integration](#api-integration))
 4. Test backend health endpoint: `curl https://your-backend/health`
 5. Use `/health` page to ping backend
+6. Try demo login mode for frontend-only testing
 
 **Check CORS:**
 ```bash
@@ -800,6 +911,7 @@ curl -H "Origin: http://localhost:3000" \
 3. Check token expiration on backend
 4. Look for 401 errors in browser Network tab
 5. Enable debug logging: `REACT_APP_LOG_LEVEL=debug`
+6. Use demo login for testing without backend
 
 ### Environment Variables Not Loading
 

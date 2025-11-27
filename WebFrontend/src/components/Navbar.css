@@ -1,3 +1,54 @@
+/* Demo Mode Banner */
+.demo-mode-banner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  animation: slide-down 0.3s ease-out;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.demo-icon {
+  font-size: 1.2rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.demo-text {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.demo-text strong {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
 .navbar {
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
