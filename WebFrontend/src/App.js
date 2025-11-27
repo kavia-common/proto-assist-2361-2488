@@ -1,48 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
+import React from 'react';
+import { Routes, Route, Outlet } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import routes from './routes';
 import './App.css';
 
-// PUBLIC_INTERFACE
-function App() {
-  const [theme, setTheme] = useState('light');
-
-  // Effect to apply theme to document element
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  // PUBLIC_INTERFACE
-  const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-  };
-
+/**
+ * Layout Component
+ * 
+ * Provides the main layout structure with Navbar and content area
+ * 
+ * PUBLIC_INTERFACE
+ */
+const Layout = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <button 
-          className="theme-toggle" 
-          onClick={toggleTheme}
-          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        >
-          {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
-        </button>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>
-          Current theme: <strong>{theme}</strong>
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar />
+      <main className="app-content">
+        <Outlet />
+      </main>
     </div>
+  );
+};
+
+/**
+ * App Component
+ * 
+ * Root component that sets up routing and renders the application
+ * 
+ * PUBLIC_INTERFACE
+ */
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        {routes.map((route) => (
+          <Route 
+            key={route.path} 
+            path={route.path} 
+            element={route.element} 
+          />
+        ))}
+      </Route>
+    </Routes>
   );
 }
 
