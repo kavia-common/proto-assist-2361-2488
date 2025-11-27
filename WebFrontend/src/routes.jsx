@@ -1,6 +1,7 @@
 import React from 'react';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
+import Chat from './pages/Chat';
 
 /**
  * Placeholder Components
@@ -20,20 +21,6 @@ const HomePage = () => {
       <p style={{ marginTop: '1rem' }}>
         Please <a href="/login" style={{ color: 'var(--text-secondary)' }}>login</a> to access the chat, wireframe, and history features.
       </p>
-    </div>
-  );
-};
-
-/**
- * Chat page component (placeholder)
- * 
- * PUBLIC_INTERFACE
- */
-const ChatPage = () => {
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Chat</h1>
-      <p>Chat interface will be implemented here</p>
     </div>
   );
 };
@@ -83,7 +70,7 @@ const routes = [
     path: '/chat',
     element: (
       <ProtectedRoute>
-        <ChatPage />
+        <Chat />
       </ProtectedRoute>
     ),
     label: 'Chat'
